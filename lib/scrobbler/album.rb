@@ -1,4 +1,4 @@
-# Getting information about an album such as release date and the tracks on it is very easy.
+  # Getting information about an album such as release date and the tracks on it is very easy.
 # 
 #   album = Scrobbler::Album.new('Carrie Underwood', 'Some Hearts', :include_info => true)
 # 
@@ -107,7 +107,7 @@ module Scrobbler
       doc           = self.class.fetch_and_parse("#{api_path}/info.xml")
       @reach        = (doc).at(:reach).inner_html
       @url          = (doc).at(:url).inner_html
-      @release_date = Time.parse((doc).at(:releasedate).inner_html.strip)
+      @release_date = parse_time(doc.at(:releasedate).inner_html.strip)
       @image_large  = (doc).at(:coverart).at(:large).inner_html
       @image_medium = (doc).at(:coverart).at(:medium).inner_html
       @image_small  = (doc).at(:coverart).at(:small).inner_html
@@ -121,6 +121,14 @@ module Scrobbler
         t.reach       = (track).at(:reach).inner_html
         tracks << t
         tracks
+      end
+    end
+    
+    def parse_time(str)
+      begin
+        Time.parse(str) 
+      rescue ArgumentError
+        nil
       end
     end
     
